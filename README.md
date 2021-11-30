@@ -1,6 +1,6 @@
 # chiliserver
 This project is used for recording values from greenhouse where chilis are grown.
-All files in this repository is for a server and esp32. Frontend files are in a different repository called chili-ui.
+All files in this repository is for a server and esp32. Frontend files are in a different repository called chili-ui.\n
 Server features:
 - Listens requests from frontend and esp32
 - Communicates with postgres database
