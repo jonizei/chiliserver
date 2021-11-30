@@ -1,0 +1,5 @@
+DB_USER = chilipsql
+DB_PASS = 
+DB_HOST = raspberrypi.local
+DB_NAME = chili_db
+DB_TABLE = record_data

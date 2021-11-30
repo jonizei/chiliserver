@@ -1,0 +1,13 @@
+README.txt
+setup.py
+chiliserver.egg-info/PKG-INFO
+chiliserver.egg-info/SOURCES.txt
+chiliserver.egg-info/dependency_links.txt
+chiliserver.egg-info/requires.txt
+chiliserver.egg-info/top_level.txt
+config/__init__.py
+config/reader.py
+db/__init__.py
+db/connector.py
+web/__init__.py
+web/webserver.py
