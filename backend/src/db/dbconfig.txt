@@ -1,5 +1,5 @@
 DB_USER = postgres
 DB_PASS = 
-DB_HOST = 192.168.8.20
+DB_HOST = 192.168.5.201
 DB_NAME = chilidb
 DB_TABLE = record_data

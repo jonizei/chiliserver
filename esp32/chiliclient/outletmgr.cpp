@@ -1,15 +1,40 @@
 #include "chiliclient.h"
 #include "outletmgr.h"
 
+/**
+ * Outlet capacity
+ */
+const int MAX_OUTLET = 3;
+
 /*
  * Count of the outlets
  */
-const int outlet_count = 3;
+int outlet_count = 0;
 
 /*
  * Array of outlets
  */
-Outlet outlet_list[outlet_count];
+Outlet outlet_list[MAX_OUTLET];
+
+/**
+ * Initializes new outlet and adds it to the outlet array
+ * Requires name of the outlet, number of the pin controlling the outlet
+ * and boolean which tells if relay turns on either LOW or HIGH signal
+ */
+void add_outlet(std::string name, int pin, bool is_reverse)
+{
+  Outlet outlet;
+  outlet.id = id_counter;
+  outlet.name = name;
+  outlet.pin = pin;
+  outlet.is_reverse = is_reverse;
+  
+  if(outlet_count > -1 && outlet_count < MAX_OUTLET)
+  {
+    outlet_list[outlet_count] = outlet;
+    outlet_count++;
+  }
+}
 
 /*
  * Initializes all the outlets and
@@ -18,27 +43,9 @@ Outlet outlet_list[outlet_count];
  */
 void init_outlets()
 {
-  Outlet outlet1;
-  outlet1.id = 1;
-  outlet1.name = "Outlet_1";
-  outlet1.pin = 27;
-  outlet1.is_reverse = true;
-
-  Outlet outlet2;
-  outlet2.id = 2;
-  outlet2.name = "Outlet_2";
-  outlet2.pin = 14;
-  outlet2.is_reverse = true;
-
-  Outlet outlet3;
-  outlet3.id = 3;
-  outlet3.name = "Outlet_3";
-  outlet3.pin = 26;
-  outlet3.is_reverse = false;
-
-  outlet_list[0] = outlet1;
-  outlet_list[1] = outlet2;
-  outlet_list[2] = outlet3;
+  add_outlet("Outlet_1", 27, true);
+  add_outlet("Outlet_2", 14, true);
+  add_outlet("Outlet_3", 26, false);
 
   init_outlet_pins();
 }

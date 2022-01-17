@@ -12,6 +12,7 @@ struct Outlet {
   bool is_reverse = false;
 };
 
+void add_outlet(std::string, int, bool);
 void init_outlets();
 void check_outlets();
 void init_outlet_pins();
