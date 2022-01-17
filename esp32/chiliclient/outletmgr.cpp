@@ -24,7 +24,7 @@ Outlet outlet_list[MAX_OUTLET];
 void add_outlet(std::string name, int pin, bool is_reverse)
 {
   Outlet outlet;
-  outlet.id = id_counter;
+  outlet.id = outlet_count;
   outlet.name = name;
   outlet.pin = pin;
   outlet.is_reverse = is_reverse;
