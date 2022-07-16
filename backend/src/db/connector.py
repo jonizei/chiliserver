@@ -32,6 +32,7 @@ class DBConnection():
         cursor.execute(query)
         self.db.commit()
 
+    # Fetches all databases from the postgres server
     def get_databases(self):
         cursor = self.db.cursor()
         query = (f"SELECT * FROM {self.config['DB_NAME']}")
