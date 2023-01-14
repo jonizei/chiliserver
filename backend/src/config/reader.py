@@ -23,14 +23,18 @@ DB_CONFIG_DATA = {
 # Reads config file and returns it in a
 # dictionary format
 def get_config(filepath):
-    with open(filepath, 'r') as config_file:
-        return create_config_dict(config_file.read())
+    if exists(filepath):
+        with open(filepath, 'r') as config_file:
+            return create_config_dict(config_file.read())
+    
+    return {}
 
 # Creates a dictionary using the contents of 
 # the confing file
 def create_config_dict(data):
     config = {}
     lines = data.split("\n")
+    lines = [x for x in lines if x]
 
     for line in lines:
         line = line.replace(" ", "")
@@ -42,7 +46,7 @@ def create_config_dict(data):
 # Writes configuration data to a file
 def write_config_file(filepath, data):
     with open(filepath, 'w') as config_file:
-        for key in data.keys:
+        for key in data.keys():
             config_file.write(f"%s = %s\n" % (key, data[key]))
 
 # Asks user to fill required configuration data and saves them to files
@@ -55,16 +59,16 @@ def write_config(web_path, db_path):
     print("Web server configuration:")
     
     print("Web config:")
-    for key in WEB_CONFIG_DATA.keys:
+    for key in WEB_CONFIG_DATA.keys():
         print(f"%s: " % (WEB_CONFIG_DATA[key]))
         tmp = input()
-        web_data[key] = tmp.trim()
+        web_data[key] = tmp.strip()
 
     print("Database config:")
-    for key in DB_CONFIG_DATA.keys:
+    for key in DB_CONFIG_DATA.keys():
         print(f"%s: " % (DB_CONFIG_DATA[key]))
         tmp = input()
-        db_data[key] = tmp.trim()
+        db_data[key] = tmp.strip()
 
     write_config_file(web_path + WEB_CONFIG_FILE, web_data)
     write_config_file(db_path + DB_CONFIG_FILE, db_data)
