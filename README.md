@@ -6,8 +6,3 @@ Server features:
 - Listens requests from frontend and esp32
 - Communicates with postgres database
 - Handles communication between frontend and esp32
-
-Esp32 features:
-- Records required data using sensors
-- Every minute it sends sensor values to the server in json format
-- Updates state of the outlets with data from the server
