@@ -54,7 +54,7 @@ class OutletManager():
     # if outlet should be on or not
     # Returns outlets in a parsed format
     def check_triggers(self, record):
-        
+
         for out in self.outlet_list:
             if out['stay_on'] is False:
                 trigger_counter = 0
@@ -68,6 +68,7 @@ class OutletManager():
             else:
                 out['is_on'] = True
 
+        self.save_outlets()
         return self.parse_outlets()
 
     # Checks if time trigger condition is true
@@ -105,19 +106,21 @@ class OutletManager():
             return record_value == trigger['value']
         elif trigger['operation'] == 'GREATER':
             return record_value > trigger['value']
+        elif trigger['operation'] == 'NOT':
+            return record_value != trigger['value']
         
         return False
 
-    # Returns sensor value using sensor from a trigger
+    # Returns sensor value using target from a trigger
     def get_record_value(self, trigger, record):
 
-        if trigger['sensor'] != 'NO_SENSOR':
-            if trigger['sensor'] == 'AIR_TEMP':
+        if trigger['target'] != 'NO_SENSOR':
+            if trigger['target'] == 'AIR_TEMP':
                 return record['air_temperature']
-            elif trigger['sensor'] == 'AIR_PRES':
+            elif trigger['target'] == 'AIR_PRES':
                 return record['air_pressure']
 
-            return record[trigger['sensor'].lower()] 
+            return record[trigger['target'].lower()] 
 
         return False
 

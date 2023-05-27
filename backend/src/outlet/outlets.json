@@ -1,1 +1,1 @@
-[{"id": 1, "name": "Outlet_1", "stay_on": false, "is_on": false, "triggers": []}, {"id": 2, "name": "Outlet_2", "stay_on": true, "is_on": false, "triggers": []}, {"id": 3, "name": "Outlet_3", "stay_on": false, "is_on": false, "triggers": []}]
+[{"id": 1, "name": "Outlet_1", "stay_on": false, "is_on": false, "triggers": []}, {"id": 2, "name": "Outlet_2", "stay_on": false, "is_on": false, "triggers": []}, {"id": 3, "name": "Outlet_3", "stay_on": false, "is_on": false, "triggers": []}]

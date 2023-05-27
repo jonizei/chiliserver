@@ -1,3 +1,9 @@
 /backend/src/db/dbconfig.txt
 /backend/src/db/dbconfig_rpie.txt
 /backend/src/web/webconfig.txt
+/backend/src/db/__pycache__
+/backend/src/web/__pycache__
+/backend/src/outlet/__pycache__
+/backend/src/config/__pycache__
+/backend/src/build
+/backend/src/chiliserver.egg-info

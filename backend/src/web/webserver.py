@@ -25,9 +25,12 @@ class WebServer(BaseHTTPRequestHandler):
         
         # Sends records as a json to a client
         if self.path == "/get-records":
-            self.set_headers(200, [("Content-Type", "application/json"), ("Access-Control-Allow-Origin", "*")])
             records = self.get_records(as_json=True)
-            self.wfile.write(records.encode("utf-8"))
+            if records is not False:
+                self.set_headers(200, [("Content-Type", "application/json"), ("Access-Control-Allow-Origin", "*")])
+                self.wfile.write(records.encode("utf-8"))
+            else:
+                self.server_response(500, "")
 
         # Sends outlets as a json to a client
         elif self.path == "/get-outlets":
@@ -35,34 +38,40 @@ class WebServer(BaseHTTPRequestHandler):
 
         else:
             self.set_headers(404, [("Content-Type", "text/html")])
-            self.wfile.write("<h1>Page not found.</h1>")
+            self.wfile.write("<h1>Page not found.</h1>".encode("utf-8"))
 
     # Method which handles all POST requests
     def do_POST(self):
 
         content_len = int(self.headers.get("Content-Length"))
-        post_body = self.rfile.read(content_len)
+        post_body = None
+
+        if content_len > 0:
+            post_body = self.rfile.read(content_len)
 
         # Receives records as a json from a client
         # Saves record information to a database
         # Sends outlets as a json to a client
         if self.path == "/post-record":
-            record = json.loads(post_body)
-            print(f"Record received: {record} \n")
-            self.save_record(record)
-            outlets_json = json.dumps(OUTLETMGR.check_triggers(record))
-            self.set_headers(200, [("Content-Type", "application/json")])
-            self.wfile.write(outlets_json.encode("utf-8"))
+            if post_body is not None:
+                record = json.loads(post_body)
+                print(f"Record received: {record} \n")
+                self.save_record(record)
+                outlets_json = json.dumps(OUTLETMGR.check_triggers(record))
+                self.server_response(200, outlets_json)
+            else:
+                self.server_response(400, "")
+            
 
         # Receives outlets as a json from a client
         # Saves the json to a file
         elif self.path == "/update-outlets":
-            outlets = json.loads(post_body)
-            for out in outlets:
-                OUTLETMGR.update_outlet(out)
-            OUTLETMGR.save_outlets()
-            self.set_headers(200, [("Content-Type", "text/html"), ("Access-Control-Allow-Origin", "*")])
-            self.wfile.write("".encode("utf-8"))
+            if post_body is not None:
+                outlets = json.loads(post_body)
+                for out in outlets:
+                    OUTLETMGR.update_outlet(out)
+                OUTLETMGR.save_outlets()
+                self.server_response(200, "")
             
     # Takes response code and headers as parameters
     # and sends them to a client.
@@ -101,6 +110,10 @@ class WebServer(BaseHTTPRequestHandler):
         self.set_headers(200, [("Content-Type", "application/json"), ("Access-Control-Allow-Origin", "*")])
         outlet_json = json.dumps(OUTLETMGR.load_outlets())
         self.wfile.write(bytes(outlet_json, "utf-8"))
+
+    def server_response(self, code, payload):
+        self.set_headers(code, [("Content-Type", "application/json"), ("Access-Control-Allow-Origin", "*")])
+        self.wfile.write(payload.encode("utf-8"))
 
 # Starts listening on given hostname and port
 # Can be interrupted with keyboard (Ctrl + C)
