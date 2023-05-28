@@ -57,14 +57,13 @@ def write_config(web_path, db_path):
     db_data = {}
 
     print("Web server configuration:")
+    print("=========================")
     
-    print("Web config:")
     for key in WEB_CONFIG_DATA.keys():
         print(f"%s: " % (WEB_CONFIG_DATA[key]))
         tmp = input()
         web_data[key] = tmp.strip()
 
-    print("Database config:")
     for key in DB_CONFIG_DATA.keys():
         print(f"%s: " % (DB_CONFIG_DATA[key]))
         tmp = input()
