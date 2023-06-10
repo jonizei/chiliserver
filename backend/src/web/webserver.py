@@ -1,5 +1,4 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import socketserver
 import db.connector as dbconnector
 import json
 import os
@@ -23,8 +22,11 @@ class WebServer(BaseHTTPRequestHandler):
     # Method which handles all GET requests
     def do_GET(self):
         
+        if self.path == "/":
+            self.send_file("index.html")
+
         # Sends records as a json to a client
-        if self.path == "/get-records":
+        elif self.path == "/get-records":
             records = self.get_records(as_json=True)
             if records is not False:
                 self.set_headers(200, [("Content-Type", "application/json"), ("Access-Control-Allow-Origin", "*")])
@@ -36,9 +38,11 @@ class WebServer(BaseHTTPRequestHandler):
         elif self.path == "/get-outlets":
             self.send_outlets()
 
+        elif self.is_resource_file(self.path):
+            self.send_file(self.path[1:])
+
         else:
-            self.set_headers(404, [("Content-Type", "text/html")])
-            self.wfile.write("<h1>Page not found.</h1>".encode("utf-8"))
+            self.send_file_not_found()
 
     # Method which handles all POST requests
     def do_POST(self):
@@ -95,8 +99,29 @@ class WebServer(BaseHTTPRequestHandler):
     # Takes a filename as a parameter, reads the file
     # from web ui directory and sends it to a client
     def send_file(self, filename):
-        f = open(WEBUI_DIR + filename, "r")
-        self.wfile.write(bytes(f.read(), "utf-8"))
+        content_type = self.get_content_type(filename)
+        if not content_type is False:
+            with open(WEBUI_DIR + filename, "rb") as f:
+                self.set_headers(200, [content_type, ("Access-Control-Allow-Origin", "*")])
+                self.wfile.write(f.read())
+        else:
+            self.send_file_not_found()
+
+    # Returns content-type based on the file extension
+    def get_content_type(self, filename):
+        tokens = filename.split(".")
+        if len(tokens) > 1:
+            extension = tokens[-1]
+
+            if extension == 'html':
+                return ("Content-Type", "text/html")
+            elif extension == 'js':
+                return ("Content-Type", "application/javascript")
+            elif extension == 'css':
+                return ("Content-Type", "text/css")
+            
+        return False
+
 
     # Takes a record (dictionary) as a parameter and saves it
     # to a database
@@ -114,6 +139,19 @@ class WebServer(BaseHTTPRequestHandler):
     def server_response(self, code, payload):
         self.set_headers(code, [("Content-Type", "application/json"), ("Access-Control-Allow-Origin", "*")])
         self.wfile.write(payload.encode("utf-8"))
+
+    def is_resource_file(self, path):
+        filename = path[1:]
+        resources = os.listdir(WEBUI_DIR)
+        if len(resources) > 0:
+            return filename in resources
+        
+        return False
+    
+    def send_file_not_found(self):
+        self.set_headers(404, [("Content-Type", "text/html")])
+        self.wfile.write("<h1>Page not found.</h1>".encode("utf-8")) 
+
 
 # Starts listening on given hostname and port
 # Can be interrupted with keyboard (Ctrl + C)
